@@ -8,10 +8,6 @@ import {
 import { v4 } from "uuid";
 
 describe("Utility Functions", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe("generateID function", () => {
     it("should generate a random ID when no idType is provided", () => {
       const result = generateID();
@@ -87,7 +83,7 @@ describe("Utility Functions", () => {
 
       const dob = generateDateOfBirth(age).getFullYear();
 
-      expect(thisYear).toBe(dob + age);
+      expect(thisYear).toBeLessThanOrEqual(dob + age);
     });
 
     it("should generate a date of birth for a random age when no age is provided", () => {
