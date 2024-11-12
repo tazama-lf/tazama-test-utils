@@ -37,3 +37,5 @@ export const generateFullMessageSet = (
     };
   }
 };
+
+export { generatePacs002, generatePacs008 };

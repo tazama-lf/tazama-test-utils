@@ -1,4 +1,4 @@
 import { generateID } from "./utils";
-import { generatePacs008 } from "./generators/pacs008";
+import { generatePacs008, generatePacs002 } from "./generators";
 
-export { generateID, generatePacs008 };
+export { generateID, generatePacs008, generatePacs002 };

@@ -1,11 +1,17 @@
 import { AccountType } from "@tazama-lf/frms-coe-lib/lib/interfaces";
-import { generateID, generatePacs008 } from "../src/";
+import { generateID, generatePacs008, generatePacs002 } from "../src/";
 
 describe("Generate ISO20022 Messages", () => {
   describe("Quoting disabled", () => {
     it("should generate a pacs008", () => {
       const result = generatePacs008();
       expect(result).toHaveProperty("FIToFICstmrCdtTrf");
+    });
+    it("should generate a pacs002", () => {
+      const pacs008 = generatePacs008();
+      const endToEndId = pacs008.FIToFICstmrCdtTrf.CdtTrfTxInf.PmtId.EndToEndId;
+      const result = generatePacs002(endToEndId);
+      expect(endToEndId).toBe(result.FIToFIPmtSts.TxInfAndSts.OrgnlEndToEndId);
     });
   });
 
