@@ -2,7 +2,6 @@ import { v4 as uuidv4 } from "uuid";
 import { faker } from "@faker-js/faker";
 import { AccountType } from "@tazama-lf/frms-coe-lib/lib/interfaces";
 
-export const TIMESTAMP_INTERVAL = 300000; // 300,000 milliseconds = 5 minutes
 export const DEBTOR_AGENT_ID = "fsp001";
 export const CREDITOR_AGENT_ID = "fsp002";
 export const DEBTOR_ID_TYPE = "TAZAMA_EID";
@@ -57,4 +56,14 @@ export const generateDateOfBirth = (age?: number) => {
     min: age ? age : 18,
     max: age ? age : 99,
   });
+};
+
+export const createTimestamp = (
+  factor: number,
+  timestampEpoch: number = 0,
+): string => {
+  const interval = 300000; // 300,000 milliseconds = 5 minutes
+  return new Date(
+    new Date(Date.now() - timestampEpoch - interval * factor),
+  ).toISOString();
 };

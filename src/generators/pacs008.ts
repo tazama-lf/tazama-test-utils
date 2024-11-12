@@ -1,5 +1,6 @@
 import { AccountType, Pacs008 } from "@tazama-lf/frms-coe-lib/lib/interfaces";
 import {
+  createTimestamp,
   CREDITOR_AGENT_ID,
   CREDITOR_ID_TYPE,
   DEBTOR_ACCOUNT_TYPE,
@@ -7,26 +8,20 @@ import {
   generateAmount,
   generateDateOfBirth,
   generateID,
-  TIMESTAMP_INTERVAL,
 } from "../utils";
 
-export const generatePacs008 = (
-  quoting?: {
-    endToEndId: string;
-    currency: string;
-    amount: number;
-    debtorDoB: Date;
-    debtorAccountId: string;
-    creditorId: string;
-    debtorId: string;
-    creditorAccountId: string;
-    transactionDescription: string;
-  },
-  timestampEpoch: number = 0,
-): Pacs008 => {
-  let timestampPacs008 = new Date(
-    new Date(Date.now() - timestampEpoch - TIMESTAMP_INTERVAL * 1),
-  ).toISOString();
+export const generatePacs008 = (quoting?: {
+  endToEndId: string;
+  currency: string;
+  amount: number;
+  debtorDoB: Date;
+  debtorAccountId: string;
+  creditorId: string;
+  debtorId: string;
+  creditorAccountId: string;
+  transactionDescription: string;
+}): Pacs008 => {
+  let timestampPacs008 = createTimestamp(1);
 
   let transactionPurpose = quoting ? "TRANSFER" : "MP2P";
   let endToEndId: string;
