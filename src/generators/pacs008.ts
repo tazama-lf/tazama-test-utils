@@ -1,4 +1,8 @@
-import { AccountType, Pacs008 } from "@tazama-lf/frms-coe-lib/lib/interfaces";
+import {
+  AccountType,
+  Pacs008,
+  Pain013,
+} from "@tazama-lf/frms-coe-lib/lib/interfaces";
 import {
   createTimestamp,
   CREDITOR_AGENT_ID,
@@ -6,21 +10,11 @@ import {
   DEBTOR_ACCOUNT_TYPE,
   DEBTOR_AGENT_ID,
   generateAmount,
-  generateDateOfBirth,
   generateID,
 } from "../utils";
+import { Person } from "../types/person";
 
-export const generatePacs008 = (quoting?: {
-  endToEndId: string;
-  currency: string;
-  amount: number;
-  debtorDoB: Date;
-  debtorAccountId: string;
-  creditorId: string;
-  debtorId: string;
-  creditorAccountId: string;
-  transactionDescription: string;
-}): Pacs008 => {
+export const generatePacs008 = (quoting?: Pain013): Pacs008 => {
   let timestampPacs008 = createTimestamp(1);
 
   let transactionPurpose = quoting ? "TRANSFER" : "MP2P";
@@ -34,32 +28,95 @@ export const generatePacs008 = (quoting?: {
   let creditorAccountId: string;
   let transactionDescription: string;
 
+  let debtorFullName: string;
+  let debtorCityOfBirth: string;
+  let debtorCountryOfBirth: string;
+  let debtorSimpleName: string;
+  let debtorPhoneNumber: string;
+
+  let creditorSimpleName: string;
+  let creditorFullName: string;
+  let creditorDoB: Date;
+  let creditorPhoneNumber: string;
+  let creditorCountryofBirth: string;
+  let creditorCityofBirth: string;
+
+  let paymentInfId: string;
+
   if (!quoting) {
+    const debtor = new Person(AccountType.DebtorAcct);
+    const creditor = new Person(AccountType.CreditorAcct);
     currency = "XTS";
     endToEndId = generateID();
     amount = generateAmount();
-    debtorDoB = generateDateOfBirth();
-    debtorId = generateID({ id: "entity", entity: AccountType.DebtorAcct });
-    debtorAccountId = generateID({
-      id: "account",
-      entity: AccountType.DebtorAcct,
-    });
-    creditorId = generateID({ id: "entity", entity: AccountType.CreditorAcct });
-    creditorAccountId = generateID({
-      id: "account",
-      entity: AccountType.CreditorAcct,
-    });
+
+    debtorDoB = debtor.birthData.date;
+    debtorId = debtor.id;
+    debtorAccountId = debtor.accountId;
+
     transactionDescription = "Generic Payment Description";
+
+    debtorFullName = debtor.fullName();
+    debtorCityOfBirth = debtor.birthData.city;
+    debtorCountryOfBirth = debtor.birthData.country;
+    debtorSimpleName = `${debtor.firstName} ${debtor.lastName}`;
+    debtorPhoneNumber = debtor.phoneNumber;
+
+    creditorSimpleName = `${creditor.firstName} ${creditor.lastName}`;
+    creditorId = creditor.id;
+    creditorAccountId = creditor.accountId;
+    creditorPhoneNumber = creditor.phoneNumber;
+    creditorFullName = creditor.fullName();
+    creditorCityofBirth = creditor.birthData.city;
+    creditorCountryofBirth = creditor.birthData.country;
+    creditorDoB = creditor.birthData.date;
+    paymentInfId = generateID();
   } else {
-    currency = quoting.currency;
-    endToEndId = quoting.endToEndId;
-    amount = quoting.amount;
-    debtorDoB = quoting.debtorDoB;
-    debtorId = quoting.debtorId;
-    debtorAccountId = quoting.debtorAccountId;
-    creditorId = quoting.creditorId;
-    creditorAccountId = quoting.creditorAccountId;
-    transactionDescription = quoting.transactionDescription;
+    currency = quoting.CdtrPmtActvtnReq.PmtInf.CdtTrfTxInf.Amt.InstdAmt.Amt.Ccy;
+    endToEndId = quoting.CdtrPmtActvtnReq.PmtInf.CdtTrfTxInf.PmtId.EndToEndId;
+    amount = Number(
+      quoting.CdtrPmtActvtnReq.PmtInf.CdtTrfTxInf.Amt.InstdAmt.Amt.Amt,
+    );
+    debtorDoB =
+      quoting.CdtrPmtActvtnReq.PmtInf.Dbtr.Id.PrvtId.DtAndPlcOfBirth.BirthDt;
+    debtorId = quoting.CdtrPmtActvtnReq.PmtInf.Dbtr.Id.PrvtId.Othr[0].Id;
+    debtorAccountId = quoting.CdtrPmtActvtnReq.PmtInf.DbtrAcct.Id.Othr[0].Id;
+    transactionDescription =
+      quoting.CdtrPmtActvtnReq.PmtInf.CdtTrfTxInf.RmtInf.Ustrd;
+
+    debtorFullName = quoting.CdtrPmtActvtnReq.PmtInf.Dbtr.Nm;
+
+    debtorCityOfBirth =
+      quoting.CdtrPmtActvtnReq.PmtInf.Dbtr.Id.PrvtId.DtAndPlcOfBirth
+        .CityOfBirth;
+    debtorCountryOfBirth =
+      quoting.CdtrPmtActvtnReq.PmtInf.Dbtr.Id.PrvtId.DtAndPlcOfBirth
+        .CtryOfBirth;
+
+    let nameTokens = debtorFullName.split(" ");
+    debtorSimpleName = `${nameTokens[0]} ${nameTokens[2]}`;
+    debtorPhoneNumber = quoting.CdtrPmtActvtnReq.PmtInf.Dbtr.CtctDtls.MobNb;
+
+    creditorFullName = quoting.CdtrPmtActvtnReq.PmtInf.CdtTrfTxInf.Cdtr.Nm;
+    nameTokens = creditorFullName.split(" ");
+    creditorSimpleName = `${nameTokens[0]} ${nameTokens[2]}`;
+    creditorId =
+      quoting.CdtrPmtActvtnReq.PmtInf.CdtTrfTxInf.Cdtr.Id.PrvtId.Othr[0].Id;
+    creditorAccountId =
+      quoting.CdtrPmtActvtnReq.PmtInf.CdtTrfTxInf.CdtrAcct.Id.Othr[0].Id;
+
+    creditorPhoneNumber =
+      quoting.CdtrPmtActvtnReq.PmtInf.CdtTrfTxInf.Cdtr.CtctDtls.MobNb;
+    creditorDoB =
+      quoting.CdtrPmtActvtnReq.PmtInf.CdtTrfTxInf.Cdtr.Id.PrvtId.DtAndPlcOfBirth
+        .BirthDt;
+    creditorCityofBirth =
+      quoting.CdtrPmtActvtnReq.PmtInf.CdtTrfTxInf.Cdtr.Id.PrvtId.DtAndPlcOfBirth
+        .CityOfBirth;
+    creditorCountryofBirth =
+      quoting.CdtrPmtActvtnReq.PmtInf.CdtTrfTxInf.Cdtr.Id.PrvtId.DtAndPlcOfBirth
+        .CtryOfBirth;
+    paymentInfId = quoting.CdtrPmtActvtnReq.PmtInf.PmtInfId;
   }
 
   return {
@@ -75,7 +132,7 @@ export const generatePacs008 = (quoting?: {
       },
       CdtTrfTxInf: {
         PmtId: {
-          InstrId: "5ab4fc7355de4ef8a75b78b00a681ed2",
+          InstrId: paymentInfId,
           EndToEndId: endToEndId,
         },
         IntrBkSttlmAmt: {
@@ -105,17 +162,17 @@ export const generatePacs008 = (quoting?: {
           },
         },
         InitgPty: {
-          Nm: "April Blake Grant",
+          Nm: debtorFullName,
           Id: {
             PrvtId: {
               DtAndPlcOfBirth: {
-                BirthDt: new Date("1968-02-01"),
-                CityOfBirth: "Unknown",
-                CtryOfBirth: "ZZ",
+                BirthDt: debtorDoB,
+                CityOfBirth: debtorCityOfBirth,
+                CtryOfBirth: debtorCountryOfBirth,
               },
               Othr: [
                 {
-                  Id: "+27730975224",
+                  Id: debtorPhoneNumber,
                   SchmeNm: {
                     Prtry: DEBTOR_ACCOUNT_TYPE,
                   },
@@ -124,17 +181,17 @@ export const generatePacs008 = (quoting?: {
             },
           },
           CtctDtls: {
-            MobNb: "+27-730975224",
+            MobNb: debtorPhoneNumber,
           },
         },
         Dbtr: {
-          Nm: "April Blake Grant",
+          Nm: debtorFullName,
           Id: {
             PrvtId: {
               DtAndPlcOfBirth: {
                 BirthDt: debtorDoB,
-                CityOfBirth: "Unknown",
-                CtryOfBirth: "ZZ",
+                CityOfBirth: debtorCityOfBirth,
+                CtryOfBirth: debtorCountryOfBirth,
               },
               Othr: [
                 {
@@ -147,21 +204,21 @@ export const generatePacs008 = (quoting?: {
             },
           },
           CtctDtls: {
-            MobNb: "+27-730975224",
+            MobNb: debtorPhoneNumber,
           },
         },
         DbtrAcct: {
           Id: {
             Othr: [
               {
-                Id: `${debtorAccountId}`,
+                Id: debtorAccountId,
                 SchmeNm: {
                   Prtry: DEBTOR_ACCOUNT_TYPE,
                 },
               },
             ],
           },
-          Nm: "April Grant",
+          Nm: debtorSimpleName,
         },
         DbtrAgt: {
           FinInstnId: {
@@ -178,17 +235,17 @@ export const generatePacs008 = (quoting?: {
           },
         },
         Cdtr: {
-          Nm: "Felicia Easton Quill",
+          Nm: creditorFullName,
           Id: {
             PrvtId: {
               DtAndPlcOfBirth: {
-                BirthDt: generateDateOfBirth(),
-                CityOfBirth: "Unknown",
-                CtryOfBirth: "ZZ",
+                BirthDt: creditorDoB,
+                CityOfBirth: creditorCityofBirth,
+                CtryOfBirth: creditorCountryofBirth,
               },
               Othr: [
                 {
-                  Id: `${creditorId}`,
+                  Id: creditorId,
                   SchmeNm: {
                     Prtry: CREDITOR_ID_TYPE,
                   },
@@ -197,21 +254,21 @@ export const generatePacs008 = (quoting?: {
             },
           },
           CtctDtls: {
-            MobNb: "+27-707650428",
+            MobNb: creditorPhoneNumber,
           },
         },
         CdtrAcct: {
           Id: {
             Othr: [
               {
-                Id: `${creditorAccountId}`,
+                Id: creditorAccountId,
                 SchmeNm: {
                   Prtry: CREDITOR_ID_TYPE,
                 },
               },
             ],
           },
-          Nm: "Felicia Quill",
+          Nm: creditorSimpleName,
         },
         Purp: {
           Cd: `${transactionPurpose}`,

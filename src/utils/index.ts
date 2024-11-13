@@ -7,6 +7,7 @@ export const CREDITOR_AGENT_ID = "fsp002";
 export const DEBTOR_ID_TYPE = "TAZAMA_EID";
 export const DEBTOR_ACCOUNT_TYPE = "MSISDN";
 export const CREDITOR_ID_TYPE = "TAZAMA_EID";
+export const CREDITOR_ACCOUNT_TYPE = "MSISDN";
 
 export const generateID = (idType?: {
   entity: AccountType;
@@ -36,11 +37,7 @@ export const generateID = (idType?: {
 };
 
 export const generateAmount = (): number => {
-  return faker.number.float({
-    min: 10,
-    max: 1000,
-    fractionDigits: 2,
-  });
+  return Number(faker.finance.amount({ min: 10, max: 1000 }));
 };
 
 export const generateRandomAge = (): number => {

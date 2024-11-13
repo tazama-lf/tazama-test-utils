@@ -77,7 +77,7 @@ describe("Utility Functions", () => {
   });
 
   describe("generateDateOfBirth function", () => {
-    it("should generate a date of birth for a specific age", () => {
+    it("should generate a date of birth for a specific age [FLAKY TEST!]", () => {
       const thisYear = new Date().getFullYear();
       const age = 30;
 

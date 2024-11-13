@@ -1,4 +1,17 @@
 import { generateID } from "./utils";
-import { generatePacs008, generatePacs002 } from "./generators";
+import {
+  generatePain001,
+  generatePain013,
+  generatePacs008,
+  generatePacs002,
+  generateFullMessageSet,
+} from "./generators";
 
-export { generateID, generatePacs008, generatePacs002 };
+export {
+  generateID,
+  generateFullMessageSet,
+  generatePain001,
+  generatePain013,
+  generatePacs008,
+  generatePacs002,
+};

@@ -8,6 +8,7 @@ import {
 
 export const generatePacs002 = (
   endToEndId: string,
+  instrId: string,
   pacs002Sts: string = "ACCC",
 ): Pacs002 => {
   let timestampPacs002 = createTimestamp(0);
@@ -17,12 +18,12 @@ export const generatePacs002 = (
     FIToFIPmtSts: {
       GrpHdr: {
         MsgId: generateID(),
-        CreDtTm: `${timestampPacs002}`,
+        CreDtTm: timestampPacs002,
       },
       TxInfAndSts: {
         OrgnlInstrId: "5ab4fc7355de4ef8a75b78b00a681ed2",
-        OrgnlEndToEndId: `${endToEndId}`,
-        TxSts: `${pacs002Sts}`,
+        OrgnlEndToEndId: endToEndId,
+        TxSts: pacs002Sts,
         ChrgsInf: [
           {
             Amt: {
