@@ -18,23 +18,23 @@ export const generateFullMessageSet = (
   pain001?: Pain001;
   pain013?: Pain013;
 } => {
-  if (!quoting) {
-    let pacs008 = generatePacs008();
-    return {
-      pacs008,
-      pacs002: generatePacs002(
-        pacs008.FIToFICstmrCdtTrf.CdtTrfTxInf.PmtId.EndToEndId,
-        pacs008.FIToFICstmrCdtTrf.CdtTrfTxInf.PmtId.InstrId,
-      ),
-    };
-  } else {
+  if (quoting) {
     let pain001 = generatePain001();
     let pain013 = generatePain013(pain001);
 
     let pacs008 = generatePacs008(pain013);
     return {
-      pain001,
-      pain013,
+        pain001,
+        pain013,
+        pacs008,
+        pacs002: generatePacs002(
+            pacs008.FIToFICstmrCdtTrf.CdtTrfTxInf.PmtId.EndToEndId,
+            pacs008.FIToFICstmrCdtTrf.CdtTrfTxInf.PmtId.InstrId,
+        ),
+    };
+  } else {
+    let pacs008 = generatePacs008();
+    return {
       pacs008,
       pacs002: generatePacs002(
         pacs008.FIToFICstmrCdtTrf.CdtTrfTxInf.PmtId.EndToEndId,
