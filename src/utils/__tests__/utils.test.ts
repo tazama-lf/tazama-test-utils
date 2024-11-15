@@ -61,10 +61,10 @@ describe("Utility Functions", () => {
   });
 
   describe("generateAmount function", () => {
-    it("should generate a random amount between 10 and 1000", () => {
+    it("should generate a random amount between 100 and 1000", () => {
       const result = generateAmount();
       expect(result).toBeLessThanOrEqual(1000);
-      expect(result).toBeGreaterThanOrEqual(10);
+      expect(result).toBeGreaterThanOrEqual(100);
     });
   });
 

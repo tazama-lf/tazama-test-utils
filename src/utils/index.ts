@@ -37,7 +37,7 @@ export const generateID = (idType?: {
 };
 
 export const generateAmount = (): number => {
-  return Number(faker.finance.amount({ min: 10, max: 1000 }));
+  return Number(faker.finance.amount({ min: 100, max: 1000 }));
 };
 
 export const generateRandomAge = (): number => {
