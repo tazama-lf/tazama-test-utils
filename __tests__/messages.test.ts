@@ -20,7 +20,9 @@ describe("Generate ISO20022 Messages", () => {
       expect(endToEndId).toBe(result.FIToFIPmtSts.TxInfAndSts.OrgnlEndToEndId);
     });
     it("should generate all messages", () => {
-      const { pain001, pain013 } = generateFullMessageSet();
+      const { pain001, pain013 } = generateFullMessageSet(false, {
+        amount: 500,
+      });
 
       expect(pain001).toBeUndefined();
       expect(pain013).toBeUndefined();
