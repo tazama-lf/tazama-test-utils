@@ -17,13 +17,13 @@ export class Person {
   id: string;
   accountId: string;
 
-  constructor(kind: AccountType) {
+  constructor(kind: AccountType, age?: number) {
     this.firstName = faker.person.firstName();
     this.middleName = faker.person.middleName();
     this.lastName = faker.person.lastName();
     this.birthData = {
       city: faker.location.city(),
-      date: generateDateOfBirth(),
+      date: generateDateOfBirth(age),
       country: faker.location.countryCode(),
     };
     this.phoneNumber = faker.phone.number({ style: "international" });

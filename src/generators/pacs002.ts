@@ -5,13 +5,14 @@ import {
   DEBTOR_AGENT_ID,
   generateID,
 } from "../utils";
+import { PartialCustomTransaction } from "../types/custom-transaction";
 
 export const generatePacs002 = (
   endToEndId: string,
   instrId: string,
-  pacs002Sts: string = "ACCC",
+  opts?: PartialCustomTransaction,
 ): Pacs002 => {
-  let timestampPacs002 = createTimestamp(0);
+  let timestampPacs002 = createTimestamp(0, opts?.firstSetTime);
 
   return {
     TxTp: "pacs.002.001.12",
@@ -21,9 +22,9 @@ export const generatePacs002 = (
         CreDtTm: timestampPacs002,
       },
       TxInfAndSts: {
-        OrgnlInstrId: "5ab4fc7355de4ef8a75b78b00a681ed2",
+        OrgnlInstrId: instrId,
         OrgnlEndToEndId: endToEndId,
-        TxSts: pacs002Sts,
+        TxSts: opts?.status ?? "ACCC",
         ChrgsInf: [
           {
             Amt: {

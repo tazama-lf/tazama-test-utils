@@ -15,19 +15,20 @@ import {
 } from "../utils";
 import { faker } from "@faker-js/faker";
 import { Person } from "../types/person";
+import { PartialCustomTransaction } from "../types/custom-transaction";
 
-export const generatePain001 = (): Pain001 => {
-  let timestampPain001 = createTimestamp(3);
+export const generatePain001 = (opts?: PartialCustomTransaction): Pain001 => {
+  let timestampPain001 = createTimestamp(3, opts?.firstSetTime);
 
-  const debtor = new Person(AccountType.DebtorAcct);
+  const debtor = new Person(AccountType.DebtorAcct, opts?.debtorAge);
   const paymentInfId = generateID();
   const endToEndId = generateID();
 
-  const transactionDescription = "Generic payment description";
+  const transactionDescription = opts?.description ?? "Generic payment description";
   const transactionPurpose = 'TRANSFER';
 
-  const amount = generateAmount().toString();
-  const currency = "XTS";
+  const amount = opts?.amount?.toString() ?? generateAmount().toString();
+  const currency = opts?.currency ?? "XTS";
 
   const creditor = new Person(AccountType.CreditorAcct);
 

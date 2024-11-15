@@ -13,9 +13,13 @@ import {
   generateID,
 } from "../utils";
 import { Person } from "../types/person";
+import { PartialCustomTransaction } from "../types/custom-transaction";
 
-export const generatePacs008 = (quoting?: Pain013): Pacs008 => {
-  let timestampPacs008 = createTimestamp(1);
+export const generatePacs008 = (
+  quoting?: Pain013,
+  opts?: PartialCustomTransaction,
+): Pacs008 => {
+  let timestampPacs008 = createTimestamp(1, opts?.firstSetTime);
 
   let transactionPurpose = quoting ? "TRANSFER" : "MP2P";
   let endToEndId: string;
@@ -44,17 +48,17 @@ export const generatePacs008 = (quoting?: Pain013): Pacs008 => {
   let paymentInfId: string;
 
   if (!quoting) {
-    const debtor = new Person(AccountType.DebtorAcct);
+    const debtor = new Person(AccountType.DebtorAcct, opts?.debtorAge);
     const creditor = new Person(AccountType.CreditorAcct);
-    currency = "XTS";
+    currency = opts?.currency ?? "XTS";
     endToEndId = generateID();
-    amount = generateAmount();
+    amount = opts?.amount ?? generateAmount();
 
     debtorDoB = debtor.birthData.date;
     debtorId = debtor.id;
     debtorAccountId = debtor.accountId;
 
-    transactionDescription = "Generic Payment Description";
+    transactionDescription = opts?.description ?? "Generic Payment Description";
 
     debtorFullName = debtor.fullName();
     debtorCityOfBirth = debtor.birthData.city;

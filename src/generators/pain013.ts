@@ -1,8 +1,12 @@
 import { Pain001, Pain013 } from "@tazama-lf/frms-coe-lib/lib/interfaces";
 import { createTimestamp, generateID } from "../utils";
+import { PartialCustomTransaction } from "../types/custom-transaction";
 
-export const generatePain013 = (base: Pain001): Pain013 => {
-  let timestampPain013 = createTimestamp(2);
+export const generatePain013 = (
+  base: Pain001,
+  opts?: PartialCustomTransaction,
+): Pain013 => {
+  let timestampPain013 = createTimestamp(2, opts?.firstSetTime);
 
   return {
     TxTp: "pain.013.001.09",
