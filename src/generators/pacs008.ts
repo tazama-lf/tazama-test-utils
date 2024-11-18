@@ -16,6 +16,8 @@ import { Person } from "../types/person";
 import { PartialCustomTransaction } from "../types/custom-transaction";
 
 export const generatePacs008 = (
+  inheritedDebtor?: Person,
+  inheritedCreditor?: Person,
   quoting?: Pain013,
   opts?: PartialCustomTransaction,
 ): Pacs008 => {
@@ -48,8 +50,9 @@ export const generatePacs008 = (
   let paymentInfId: string;
 
   if (!quoting) {
-    const debtor = new Person(AccountType.DebtorAcct, opts?.debtorAge);
-    const creditor = new Person(AccountType.CreditorAcct);
+    const debtor =
+      inheritedDebtor ?? new Person(AccountType.DebtorAcct, opts?.debtorAge);
+    const creditor = inheritedCreditor ?? new Person(AccountType.CreditorAcct);
     currency = opts?.currency ?? "XTS";
     endToEndId = generateID();
     amount = opts?.amount ?? generateAmount();

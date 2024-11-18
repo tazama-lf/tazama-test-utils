@@ -38,7 +38,7 @@ export const generateFullMessageSet = (
       let pain001 = generatePain001(debtor, creditor, options);
       let pain013 = generatePain013(pain001, options);
 
-      let pacs008 = generatePacs008(pain013, options);
+      let pacs008 = generatePacs008(debtor, creditor, pain013, options);
       let pacs002 = generatePacs002(
         pacs008.FIToFICstmrCdtTrf.CdtTrfTxInf.PmtId.EndToEndId,
         pacs008.FIToFICstmrCdtTrf.CdtTrfTxInf.PmtId.InstrId,
@@ -67,7 +67,7 @@ export const generateFullMessageSet = (
         },
       });
     } else {
-      let pacs008 = generatePacs008(undefined, options);
+      let pacs008 = generatePacs008(debtor, creditor, undefined, options);
       let pacs002 = generatePacs002(
         pacs008.FIToFICstmrCdtTrf.CdtTrfTxInf.PmtId.EndToEndId,
         pacs008.FIToFICstmrCdtTrf.CdtTrfTxInf.PmtId.InstrId,
