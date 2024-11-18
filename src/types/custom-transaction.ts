@@ -1,4 +1,4 @@
-export type CustomTransaction = {
+export interface CustomTransaction {
   firstSetTime: number;
   currency: string;
   amount: number;
@@ -8,6 +8,6 @@ export type CustomTransaction = {
   transactionType: string;
   latitude: number;
   longitude: number;
-};
+}
 
 export type PartialCustomTransaction = Partial<CustomTransaction>;

@@ -1,7 +1,4 @@
-import {
-  AccountType,
-  Pain001,
-} from "@tazama-lf/frms-coe-lib/lib/interfaces";
+import { AccountType, Pain001 } from "@tazama-lf/frms-coe-lib/lib/interfaces";
 import {
   createTimestamp,
   CREDITOR_ACCOUNT_TYPE,
@@ -17,20 +14,22 @@ import { faker } from "@faker-js/faker";
 import { Person } from "../types/person";
 import { PartialCustomTransaction } from "../types/custom-transaction";
 
-export const generatePain001 = (opts?: PartialCustomTransaction): Pain001 => {
+export const generatePain001 = (
+  debtor: Person,
+  creditor: Person,
+  opts?: PartialCustomTransaction,
+): Pain001 => {
   let timestampPain001 = createTimestamp(3, opts?.firstSetTime);
 
-  const debtor = new Person(AccountType.DebtorAcct, opts?.debtorAge);
   const paymentInfId = generateID();
   const endToEndId = generateID();
 
-  const transactionDescription = opts?.description ?? "Generic payment description";
-  const transactionPurpose = 'TRANSFER';
+  const transactionDescription =
+    opts?.description ?? "Generic payment description";
+  const transactionPurpose = "TRANSFER";
 
   const amount = opts?.amount?.toString() ?? generateAmount().toString();
   const currency = opts?.currency ?? "XTS";
-
-  const creditor = new Person(AccountType.CreditorAcct);
 
   return {
     TxTp: "pain.001.001.11",
