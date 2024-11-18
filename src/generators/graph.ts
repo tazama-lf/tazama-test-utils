@@ -1,9 +1,3 @@
-import {
-  Pacs002,
-  Pacs008,
-  Pain001,
-  Pain013,
-} from "@tazama-lf/frms-coe-lib/lib/interfaces";
 import { AccountGraph, EntityGraph, GraphRelationship } from "../types/graph";
 import {
   CREDITOR_ACCOUNT_TYPE,
@@ -87,23 +81,6 @@ export const prepGraphAccountHolders = (
       CreDtTm: timestamp,
     },
   ];
-};
-
-const test = (pacs008: Pacs008, pacs002: Pacs002, pain001: Pain001, pain013: Pain013) => {
-  let currency = pacs008.FIToFICstmrCdtTrf.CdtTrfTxInf.InstdAmt.Amt.Ccy;
-  let amount = pacs008.FIToFICstmrCdtTrf.CdtTrfTxInf.InstdAmt.Amt.Amt;
-  let endToEndId = pacs008.FIToFICstmrCdtTrf.CdtTrfTxInf.PmtId.EndToEndId;
-  let timestampPacs008 = pacs008.FIToFICstmrCdtTrf.GrpHdr.CreDtTm;
-  let messageIdPacs008 = pacs008.FIToFICstmrCdtTrf.GrpHdr.MsgId;
-
-  let timestampPacs002 = pacs002.FIToFIPmtSts.GrpHdr.CreDtTm;
-  let messageIdPacs002 = pacs002.FIToFIPmtSts.GrpHdr.MsgId;
-  let pacs002Sts = pacs002.FIToFIPmtSts.TxInfAndSts.TxSts;
-
-  const timestampPain001 = pain001.CstmrCdtTrfInitn.GrpHdr.CreDtTm;
-  const messageIdPain001 = pain001.CstmrCdtTrfInitn.GrpHdr.MsgId;
-  const timestampPain013 = pain013.CdtrPmtActvtnReq.GrpHdr.CreDtTm;
-  const messageIdPain013 = pain013.CdtrPmtActvtnReq.GrpHdr.MsgId;
 };
 
 export const prepGraphTransactions = (
