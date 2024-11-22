@@ -1,3 +1,4 @@
+import { AccountType } from "@tazama-lf/frms-coe-lib/lib/interfaces";
 import {
   generatePain001,
   generatePain013,
@@ -5,6 +6,14 @@ import {
   generatePacs002,
   generateFullMessageSet,
 } from "../src/";
+import { Person } from "../src/types/person";
+
+let debtor: Person;
+let creditor: Person;
+beforeEach(() => {
+  debtor = new Person(AccountType.DebtorAcct);
+  creditor = new Person(AccountType.CreditorAcct);
+});
 
 describe("Generate ISO20022 Messages", () => {
   describe("Quoting disabled", () => {
@@ -20,9 +29,12 @@ describe("Generate ISO20022 Messages", () => {
       expect(endToEndId).toBe(result.FIToFIPmtSts.TxInfAndSts.OrgnlEndToEndId);
     });
     it("should generate all messages", () => {
-      const { pain001, pain013 } = generateFullMessageSet(false, {
+      const messages = generateFullMessageSet(false, {
         amount: 500,
       });
+      expect(messages.length).toBe(1);
+
+      const { pain001, pain013 } = messages[0];
 
       expect(pain001).toBeUndefined();
       expect(pain013).toBeUndefined();
@@ -31,7 +43,7 @@ describe("Generate ISO20022 Messages", () => {
 
   describe("Quoting enabled", () => {
     it("should generate all messages", () => {
-      const { pain001, pain013 } = generateFullMessageSet(true);
+      const { pain001, pain013 } = generateFullMessageSet(true)[0];
 
       expect(pain001).toBeDefined();
       expect(pain013).toBeDefined();
@@ -41,7 +53,7 @@ describe("Generate ISO20022 Messages", () => {
       );
     });
     it("should have the same end to end id and inf id", () => {
-      const firstPain = generatePain001();
+      const firstPain = generatePain001(debtor, creditor);
       const secondPain = generatePain013(firstPain);
 
       expect(firstPain.CstmrCdtTrfInitn.PmtInf.PmtInfId).toBe(
@@ -52,7 +64,7 @@ describe("Generate ISO20022 Messages", () => {
         firstPain.CstmrCdtTrfInitn.PmtInf.CdtTrfTxInf.PmtId.EndToEndId,
       ).toBe(secondPain.CdtrPmtActvtnReq.PmtInf.CdtTrfTxInf.PmtId.EndToEndId);
 
-      const result = generatePacs008(secondPain);
+      const result = generatePacs008(debtor, creditor, secondPain);
 
       expect(result.FIToFICstmrCdtTrf.CdtTrfTxInf.PmtId.EndToEndId).toBe(
         firstPain.CstmrCdtTrfInitn.PmtInf.CdtTrfTxInf.PmtId.EndToEndId,

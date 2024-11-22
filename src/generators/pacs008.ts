@@ -14,6 +14,7 @@ import {
 } from "../utils";
 import { Person } from "../types/person";
 import { PartialCustomTransaction } from "../types/custom-transaction";
+import { faker } from "@faker-js/faker";
 
 export const generatePacs008 = (
   inheritedDebtor?: Person,
@@ -294,6 +295,14 @@ export const generatePacs008 = (
         Envlp: {
           Doc: {
             Xprtn: new Date("2021-11-30T10:38:56.000Z"),
+            InitgPty: {
+              Glctn: {
+                Lat: (opts?.latitude ?? faker.location.latitude()).toString(),
+                Long: (
+                  opts?.longitude ?? faker.location.longitude()
+                ).toString(),
+              },
+            },
           },
         },
       },

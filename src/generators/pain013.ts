@@ -29,6 +29,7 @@ export const generatePain013 = (
         },
         Dbtr: base.CstmrCdtTrfInitn.PmtInf.Dbtr,
         DbtrAcct: {
+          Nm: base.CstmrCdtTrfInitn.PmtInf.DbtrAcct.Nm,
           Id: {
             Othr: [
               {
