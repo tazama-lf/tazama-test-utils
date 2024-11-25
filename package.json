@@ -6,6 +6,9 @@
     "build": "npx rimraf lib && tsc --project tsconfig.json",
     "test": "jest --config=jest.config.ts --passWithNoTests"
   },
+  "files": [
+    "lib"
+  ],
   "keywords": [],
   "author": "",
   "license": "Apache-2.0",
@@ -22,7 +25,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^9.2.0",
-    "@tazama-lf/frms-coe-lib": "^5.0.0-rc.4",
+    "@tazama-lf/frms-coe-lib": "5.0.0-rc.6",
     "uuid": "^11.0.3"
   }
 }
